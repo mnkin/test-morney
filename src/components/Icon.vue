@@ -12,7 +12,6 @@ try {
   importAll(require.context("../assets/icons", true, /\.svg$/));
 } catch (error) {
   console.log(error);
-  console.log();
 }
 
 export default Vue.extend({
