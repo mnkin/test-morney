@@ -1,10 +1,9 @@
 <template>
-  <div>Statistics.vue</div>
+  <Layout> Statistics.vue </Layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import Statistics from "@/views/Statistics.vue";
 
 export default Vue.extend({});
 </script>
