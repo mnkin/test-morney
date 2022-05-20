@@ -36,8 +36,8 @@ export default class Tags extends Vue {
     const name = window.prompt("请输入标签名")
     if(name === ''){
       window.alert("标签名不能为空")
-    }else{
-      this.$emit('update:dataSource',[...this.dataSource,name])
+    }else if(this.dataSource){
+      this.$emit('update:dataSource',[...this.dataSource,name]);
     }
   }
 }

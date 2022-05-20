@@ -6,6 +6,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+// eslint-disable-next-line no-undef
 let importAll = (requireContext: __WebpackModuleApi.RequireContext) =>
   requireContext.keys().forEach(requireContext);
 try {
