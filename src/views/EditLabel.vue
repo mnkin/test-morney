@@ -1,16 +1,17 @@
 <template>
   <Layout>
     <div class="navBar">
-      <Icon class="leftIcon" name="left"></Icon>
+      <Icon class="leftIcon" name="left" @click="goBack"></Icon>
       <span class="title">编辑标签</span>
       <span class="rightIcon"></span>
     </div>
     <div class="form-wrapper">
-      <FormItem :value.sync="tag.name"
+      <FormItem :value="tag.name"
+                @update:value="update"
                 field-name="标签名" placeholder="请输入标签名"></FormItem>
     </div>
     <div class="button-wrapper">
-      <Button>编辑标签</Button>
+      <Button @click="remove">删除标签</Button>
     </div>
   </Layout>
 </template>
@@ -28,7 +29,7 @@ import Tags from '@/components/Money.vue/Tags.vue';
 })
 export default class EditLabel extends Vue {
   name: 'EditLabel';
-  tag?: { id:string,name:string } = undefined;
+  tag?: { id: string, name: string } = undefined;
 
   created() {
     const id = this.$route.params.id;
@@ -40,6 +41,21 @@ export default class EditLabel extends Vue {
     } else {
       this.$router.replace('/404');
     }
+  }
+
+  update(name: string) {
+    if (this.tag) {
+      tagListModel.update(this.tag.id, name);
+    }
+  }
+
+  remove() {
+    if (this.tag) {
+      tagListModel.remove(this.tag.id);
+    }
+  }
+  goBack(){
+    this.$router.back()
   }
 }
 </script>
