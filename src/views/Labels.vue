@@ -21,7 +21,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
-import {tagListModel} from '@/models/tagListModel';
 
 @Component
 export default class Labels extends Vue {
@@ -30,7 +29,7 @@ export default class Labels extends Vue {
   createTag() {
     const name = window.prompt('请输入标签名');
     if (name) {
-      window.createtag(name);
+      window.createTag(name);
     }
   }
 
