@@ -24,7 +24,7 @@ import store from '@/store/index2';
 export default class Money extends Vue {
   tags=store.tagList;
   record: RecordItem = {tags: [], notes: '', type: '-', amount: 0};
-  recordList= store.requireList;
+  recordList= store.recordList;
 
   onUpdateTags(tags: string[]) {
     this.record.tags = tags;
