@@ -6,7 +6,7 @@
           v-for="tag in tags"
           :key="tag.id"
           :to="`/labels/edit/${tag.id}`">
-        <span>{{tag.name}}</span>
+        <span>{{ tag.name }}</span>
         <Icon name="right"></Icon>
       </router-link>
     </div>
@@ -27,17 +27,10 @@ import {tagListModel} from '@/models/tagListModel';
 export default class Labels extends Vue {
   tags = window.tagList;
 
-  createTag(){
-    const name = window.prompt("请输入标签名")
-    if(name === ''){
-      window.alert("标签名不能为空")
-    }else{
-     const message =  tagListModel.create(name);
-     if(message === 'duplicated'){
-       window.alert('标签名重复')
-     }else if(name === 'success'){
-       window.alert('添加成功')
-     }
+  createTag() {
+    const name = window.prompt('请输入标签名');
+    if (name) {
+      window.createtag(name);
     }
   }
 
