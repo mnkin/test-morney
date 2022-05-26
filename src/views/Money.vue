@@ -40,7 +40,7 @@ export default class Money extends Vue {
     this.record.amount = parseFloat(value);
   }
   saveRecord() {
-    this.$store.commit('createTag',this.record)
+    this.$store.commit('createRecord',this.record)
   }
 
 
