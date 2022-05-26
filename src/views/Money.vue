@@ -20,16 +20,16 @@ import store from '@/store';
 
 @Component({
   components: {Tags, FormItem, Types, NumberPad},
-  computed:{
-    recordList(){
-      return this.$store.state.recordList;
-    }
-  }
 })
 export default class Money extends Vue {
+  get recordList() {
+    return this.$store.state.recordList;
+  }
+
   record: RecordItem = {tags: [], notes: '', type: '-', amount: 0};
-  created(){
-    this.$store.commit('fetchRecords')
+
+  created() {
+    this.$store.commit('fetchRecords');
   }
 
   onUpdateNotes(value: string) {
@@ -39,8 +39,9 @@ export default class Money extends Vue {
   onUpdateAmount(value: string) {
     this.record.amount = parseFloat(value);
   }
+
   saveRecord() {
-    this.$store.commit('createRecord',this.record)
+    this.$store.commit('createRecord', this.record);
   }
 
 
@@ -52,8 +53,9 @@ export default class Money extends Vue {
   display: flex;
   flex-direction: column-reverse;
 }
-.notes{
-  padding:12px 0;
+
+.notes {
+  padding: 12px 0;
 }
 </style>
 
