@@ -1,42 +1,44 @@
 <template>
-    <div class="tags">
-      <div class="new">
-        <button @click="createTag">新增标签</button>
-      </div>
-      <ul class="current">
-        <li v-for="tag in dataSource" :key="tag.id"
-            :class="{selected:selectedTags.indexOf(tag)>=0}" @click="toggle(tag)">
-          {{tag.name}}
-        </li>
-      </ul>
+  <div class="tags">
+    <div class="new">
+      <button @click="createTag">新增标签</button>
     </div>
+    <ul class="current">
+      <li v-for="tag in tagList" :key="tag.id"
+          :class="{selected:selectedTags.indexOf(tag)>=0}" @click="toggle(tag)">
+        {{ tag.name }}
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import {Component, Prop} from "vue-property-decorator";
+import {Component, Prop} from 'vue-property-decorator';
+import store from '@/store/index2';
+
 @Component
 
 export default class Tags extends Vue {
-  @Prop() readonly dataSource:string[]|undefined;
-  selectedTags:string[] = [];
+  tagList = store.fetchTags();
+  selectedTags: string[] = [];
 
-  toggle(tag:string){
-    const index= this.selectedTags.indexOf(tag)
-    if(index>=0){
-      this.selectedTags.splice(index,1)
-    }else{
-      this.selectedTags.push(tag)
+  toggle(tag: string) {
+    const index = this.selectedTags.indexOf(tag);
+    if (index >= 0) {
+      this.selectedTags.splice(index, 1);
+    } else {
+      this.selectedTags.push(tag);
     }
-    this.$emit('update:value',this.selectedTags)
+    this.$emit('update:value', this.selectedTags);
   }
-  createTag(){
-    const name = window.prompt("请输入标签名")
-    if(name === ''){
-      window.alert("标签名不能为空")
-    }else if(this.dataSource){
-      this.$emit('update:dataSource',[...this.dataSource,name]);
+
+  createTag() {
+    const name = window.prompt('请输入标签名');
+    if (!name) {
+      return window.alert('标签名不能为空');
     }
+    store.createTag(name);
   }
 }
 </script>
@@ -65,8 +67,9 @@ export default class Tags extends Vue {
       padding: 0 16px;
       margin-right: 12px;
       margin-top: 6px;
-      &.selected{
-        background: darken(#d9d9d9,50%);
+
+      &.selected {
+        background: darken(#d9d9d9, 50%);
         color: white;
       }
     }
