@@ -8,7 +8,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         recordList: [] as RecordItem[],
-        tagList:[] as Tag[],
+        tagList: [] as Tag[],
     },
     mutations: {
         fetchRecords(state) {
@@ -24,10 +24,10 @@ const store = new Vuex.Store({
             window.localStorage.setItem('recordList', JSON.stringify(state.recordList));
         },
 
-        fetchTags(state){
-            return state.tagList = JSON.parse(window.localStorage.getItem("tagList") || '[]');
+        fetchTags(state) {
+            return state.tagList = JSON.parse(window.localStorage.getItem('tagList') || '[]');
         },
-        createTag(state,name) {
+        createTag(state, name) {
             const names = state.tagList.map(item => item.name);
             if (names.indexOf(name) >= 0) {
                 window.alert('标签名重复');
@@ -35,9 +35,40 @@ const store = new Vuex.Store({
             }
             const id = createId().toString();
             state.tagList.push({id, name: name});
-            store.commit('saveTags')
+            store.commit('saveTags');
             window.alert('添加成功');
             return 'success';
+        },
+        removeTag(state, id: string) {
+            let index = -1;
+            for (let i = 0; i < this.tagList.length; i++) {
+                if (state.tagList[i].id === id) {
+                    index = i;
+                    break;
+                }
+            }
+            state.tagList.splice(index, 1);
+            store.commit('saveTags');
+            return true;
+        },
+        // updateTag(state,id: string, name: string){
+        //     const idList = state.tagList.map(item => item.id);
+        //     if (idList.indexOf(id) >= 0) {
+        //         const names = state.tagList.map(item => item.name);
+        //         if (names.indexOf(name) >= 0) {
+        //             return 'duplicated';
+        //         } else {
+        //             const tag = state.tagList.filter(item => item.id === id)[0];
+        //             tag.name = name;
+        //             store.commit('saveTags');
+        //             return 'success';
+        //         }
+        //     } else {
+        //         return 'not found';
+        //     }
+        // },
+        findTag(state, id: string) {
+            return state.tagList.filter(item => item.id === id)[0];
         },
         saveTags(state) {
             window.localStorage.setItem('tagList', JSON.stringify(state.tagList));
