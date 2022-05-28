@@ -14,13 +14,12 @@
 import Vue from 'vue';
 import Tags from '@/components/Money.vue/Tags.vue';
 import FormItem from '@/components/Money.vue/FormItem.vue';
-import Types from '@/components/Money.vue/Types.vue';
 import NumberPad from '@/components/Money.vue/NumberPad.vue';
 import {Component} from 'vue-property-decorator';
 import Tabs from '@/components/Tabs.vue';
 
 @Component({
-  components: {Tabs, Tags, FormItem, Types, NumberPad},
+  components: {Tabs, Tags, FormItem, NumberPad},
 })
 export default class Money extends Vue {
   typeList = [{text: '支出', value: '-'}, {text: '收入', value: '+'}];

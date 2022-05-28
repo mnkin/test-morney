@@ -9,11 +9,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
-import Types from '@/components/Money.vue/Types.vue';
 import Tabs from '@/components/Tabs.vue';
 
 @Component({
-  components: {Tabs, Types}
+  components: {Tabs}
 })
 export default class Statistics extends Vue {
   typeList = [{text: '支出', value: '-'}, {text: '收入', value: '+'}];
