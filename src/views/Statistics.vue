@@ -2,6 +2,13 @@
   <Layout>
     <Tabs :data-source="typeList" class-prefix="type" :value.sync="type"></Tabs>
     <Tabs :data-source="intervalList" class-prefix="interval" :value.sync="interval"></Tabs>
+    <div>
+      <ol>
+        <li v-for="item in result" :key="item.id">
+          {{item}}
+        </li>
+      </ol>
+    </div>
   </Layout>
 </template>
 
@@ -9,14 +16,26 @@
 import Vue from 'vue';
 import {Component} from 'vue-property-decorator';
 import Tabs from '@/components/Tabs.vue';
+import intervalList from '@/constants/intervalList';
+import recordListType from '@/constants/recordListType';
 
 @Component({
   components: {Tabs}
 })
 export default class Statistics extends Vue {
-  typeList = [{text: '支出', value: '-'}, {text: '收入', value: '+'}];
+  get recordList(){
+    return this.$store.state.recordList;
+  }
+  get result(){
+    return this.recordList;
+  }
+
+  mounted(){
+    this.$store.commit('fetchRecords')
+  }
+  typeList = recordListType;
   type = '-';
-  intervalList = [{text: '按日', value: 'day'}, {text: '按周', value: 'week'}, {text: '按月', value: 'month'}];
+  intervalList =intervalList;
   interval = 'day';
 }
 </script>
