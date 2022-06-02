@@ -26,5 +26,5 @@ module.exports = {
       }
     }
   ],
-  "globals": { "RecordItem": true }
+  "globals": { "RootState": true,'RecordItem':true,'Tag':true}
 }
