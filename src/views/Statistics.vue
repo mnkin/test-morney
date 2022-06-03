@@ -1,67 +1,93 @@
 <template>
   <Layout>
     <Tabs :data-source="typeList" class-prefix="type" :value.sync="type"></Tabs>
-    <Tabs
-      :data-source="intervalList"
-      class-prefix="interval"
-      :value.sync="interval"
-    ></Tabs>
-      <ol>
-        <li v-for="(group, index) in result" :key="index">
-          <h3 class="title">{{group.title}}</h3>
-          <ol>
-            <li v-for="item in group.items" :key="item.createdAt" class="record">
-             <span>{{tagsString(item.tags)}}</span>
-              <span class="notes">{{item.notes}}</span>
-              <span>¥{{item.amount}}</span>
-            </li>
-          </ol>
-        </li>
-      </ol>
+    <ol>
+      <li v-for="(group, index) in groupedList" :key="index">
+        <h3 class="title">{{ beautify(group.title) }}<span>¥{{group.total}}</span></h3>
+        <ol>
+          <li v-for="item in group.items" :key="item.id" class="record">
+            <span>{{ tagsString(item.tags) }}</span>
+            <span class="notes">{{ item.notes }}</span>
+            <span>¥{{ item.amount }}</span>
+          </li>
+        </ol>
+      </li>
+    </ol>
   </Layout>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import Tabs from "@/components/Tabs.vue";
-import intervalList from "@/constants/intervalList";
-import recordListType from "@/constants/recordListType";
-
+import Vue from 'vue';
+import {Component} from 'vue-property-decorator';
+import Tabs from '@/components/Tabs.vue';
+import recordListType from '@/constants/recordListType';
+import dayjs from 'dayjs';
+import clone from '@/lib/clone';
 
 @Component({
-  components: { Tabs },
+  components: {Tabs},
 })
 export default class Statistics extends Vue {
-  tagsString(tags:Tag[]){
-    return tags.length>0?tags.join(',') : '无'
+  tagsString(tags: Tag[]) {
+    return tags.length > 0 ? tags.join(',') : '无';
   }
+
+  beautify(string: string) {
+    const now = dayjs();
+    const day = dayjs(string);
+    if (day.isSame(now, 'day')) {
+      return '今天';
+    } else if (day.isSame(now.subtract(1, 'day'), 'day')) {
+      return '昨天';
+    } else if (day.isSame(now.subtract(2, 'day'), 'day')) {
+      return '前天';
+    } else if (day.isSame(now, 'year')) {
+      return day.format('M月D日');
+    } else {
+      return day.format('YYYY年M月D日');
+    }
+  }
+
   get recordList() {
     return (this.$store.state as RootState).recordList;
   }
-  get result() {
-    const { recordList } = this;
-    type HashTableValue = {
-      title: string,
-      items:RecordItem[]
-    };
-    const hashTable: {
-      [key: string]: HashTableValue} = {};
-    for (let i = 0; i < recordList.length; i++) {
-      const [date, time] = recordList[i].createdAt!.split("T");
-      hashTable[date] = hashTable[date] || {title:date,items:[]};
-      hashTable[date].items.push(recordList[i]);
+
+  get groupedList() {
+    const {recordList} = this;
+    if (recordList.length === 0) {
+      return [];
     }
-    return hashTable;
+    const newList = clone(recordList).filter(r => r.type === this.type).sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf());
+    type Result = {
+      title:string,total?:number,items:RecordItem[]
+    }[]
+    const result:Result = [
+      {
+        title: dayjs(newList[0].createdAt).format('YYYY-MM-DD'),
+        items: [newList[0]]
+      }
+    ];
+    for (let i = 1; i < newList.length; i++) {
+      const current = newList[i];
+      const last = result[result.length - 1];
+      if (dayjs(last.title).isSame(dayjs(current.createdAt), 'day')) {
+        last.items.push(current);
+      } else {
+        result.push({title: dayjs(current.createdAt).format('YYYY-MM-DD'), items: [current]});
+      }
+    }
+    result.map(group=>{
+      group.total = group.items.reduce((sum,item)=>sum+=item.amount,0)
+    })
+    return result;
   }
 
   beforeCreate() {
-    this.$store.commit("fetchRecords");
+    this.$store.commit('fetchRecords');
   }
+
   typeList = recordListType;
-  type = "-";
-  intervalList = intervalList;
-  interval = "day";
+  type = '-';
 }
 </script>
 
@@ -77,24 +103,29 @@ export default class Statistics extends Vue {
     }
   }
 }
+
 ::v-deep .interval-item {
   height: 48px;
 }
-%item{
+
+%item {
   padding: 8px 16px;
   line-height: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.title{
+
+.title {
   @extend %item;
 }
-.record{
+
+.record {
   @extend %item;
   background: white;
 }
-.notes{
+
+.notes {
   margin-right: auto;
   margin-left: 6px;
   color: #999;
