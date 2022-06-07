@@ -26,7 +26,6 @@ import Button from '@/components/Button.vue';
   components: {Button, FormItem},
 })
 export default class EditLabel extends Vue {
-  name: 'EditLabel';
 
   get currentTag() {
     return this.$store.state.currentTag;
